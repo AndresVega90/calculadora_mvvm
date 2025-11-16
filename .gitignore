@@ -1,0 +1,9 @@
+# en la raíz del proyecto
+# si estás en PowerShell
+ni .gitignore
+
+# luego dentro del archivo .gitignore pon algo como:
+__pycache__/
+.env
+.venv/
+*.pyc
