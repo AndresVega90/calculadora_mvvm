@@ -85,3 +85,46 @@ class CalculadoraViewModel:
         self.estado["valor_b"] = 0.0
         self.estado["resultado"] = 0.0
         self._notificar()
+
+
+# ===========================================
+#  VISTA CON TKINTER
+# ===========================================
+
+class CalculadoraVista(tk.Tk):
+    """
+    Ventana principal.
+    Se suscribe al view_model y se renderiza cuando el estado cambia
+    """
+
+    def __init__(self, viewmodel: CalculadoraViewModel):
+        super().__init__()
+
+        self.viewmodel = viewmodel
+        self.title("Calculadora MVVM (Tkinter)")
+
+        # variables Tkinter
+        self.variable_a = tk.StringVar()
+        self.variable_b = tk.StringVar()
+        self.variable_resultado = tk.StringVar()
+
+        # construir la interfaz
+        
+
+        # suscribir vista al viewmodel
+        self.viewmodel.suscribir(self.render)
+
+        # render incial
+        self.render(self.viewmodel.estado)
+
+    
+    def render(self, estado:dict):
+        """
+        Esta funcion se llama cada vez que cambia el estado en el ViewModel.
+        Actuliza los StringVar que ve el usuario
+        """
+
+        # Convertimos los float a texto
+        self.variable_a.set(str(estado["valor_a"]))
+        self.variable_b.set(str(estado["valor_b"]))
+        self.variable_resultado.set(str(estado["resultado"]))
