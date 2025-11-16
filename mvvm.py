@@ -109,13 +109,56 @@ class CalculadoraVista(tk.Tk):
         self.variable_resultado = tk.StringVar()
 
         # construir la interfaz
-        
+        self._construir_widgets()
 
         # suscribir vista al viewmodel
         self.viewmodel.suscribir(self.render)
 
         # render incial
         self.render(self.viewmodel.estado)
+
+    def _construir_widgets(self):
+        padding = {"padx": 8, "pady":8}
+
+        # Campo valor A
+        ttk.Label(self, text="Valor A").grid(row=0, column=0, sticky="e", **padding)
+        entry_a = ttk.Entry(self, textvariable=self.variable_a)
+        entry_a.grid(row=0,column=1, **padding)
+
+        entry_a.bind(
+            "<KeyRelease>",
+            lambda event: self.viewmodel.set_valor_a(self.variable_a.get())
+        )
+
+        # Campo valor B
+        ttk.Label(self, text="Valor B").grid(row=1, column=0, sticky="e", **padding)
+        entry_b = ttk.Entry(self, textvariable=self.variable_b)
+        entry_b.grid(row=1,column=1, **padding)
+
+        entry_b.bind(
+            "<KeyRelease>",
+            lambda event: self.viewmodel.set_valor_b(self.variable_b.get())
+        )
+
+        # Resultado solo lectura
+        ttk.Label(self,text="Resultado").grid(row=2, column=0, sticky="e", **padding)
+        entry_resultado = ttk.Entry(self, textvariable=self.variable_resultado, state="readonly")
+        entry_resultado.grid(row=2, column=1, **padding)
+
+        # Botones
+        frame_botones = ttk.Frame(self)
+        frame_botones.grid(row=3, column=0, columnspan=2, **padding)
+
+        btn_sumar = ttk.Button(frame_botones, text="Sumar", command=self.viewmodel.sumar)
+        btn_sumar.grid(row=0, column=0, padx=5)
+
+        btn_restar = ttk.Button(frame_botones, text="Restar", command=self.viewmodel.restar)
+        btn_restar.grid(row=0, column=1, padx=5)
+
+        btn_reset = ttk.Button(frame_botones, text="Reset", command=self.viewmodel.reset)
+        btn_reset.grid(row=0, column=2, padx=5)
+
+
 
     
     def render(self, estado:dict):
@@ -128,3 +171,13 @@ class CalculadoraVista(tk.Tk):
         self.variable_a.set(str(estado["valor_a"]))
         self.variable_b.set(str(estado["valor_b"]))
         self.variable_resultado.set(str(estado["resultado"]))
+
+
+def main():
+    modelo = CalculadoraModelo()
+    viewmodel = CalculadoraViewModel(modelo=modelo)
+    app = CalculadoraVista(viewmodel=viewmodel)
+    app.mainloop()
+
+if __name__ == "__main__":
+    main()
